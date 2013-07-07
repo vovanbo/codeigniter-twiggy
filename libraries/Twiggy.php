@@ -70,12 +70,6 @@ class Twiggy
 		$this->_config['environment']['cache'] = ($this->_config['environment']['cache']) ? $this->_config['twig_cache_dir'] : FALSE;
 		
 		$this->_twig = new Twig_Environment($this->_twig_loader, $this->_config['environment']);
-		$this->_twig->setLexer(new Twig_Lexer($this->_twig, $this->_config['delimiters']));
-
-		// Initialize defaults
-		$this->theme($this->_config['default_theme'])
-			 ->layout($this->_config['default_layout'])
-			 ->template($this->_config['default_template']);
 
 		// Auto-register functions and filters.
 		if(count($this->_config['register_functions']) > 0)
@@ -87,6 +81,14 @@ class Twiggy
 		{
 			foreach($this->_config['register_filters'] as $filter) $this->register_filter($filter);
 		}
+
+		// For Twig 1.12 and later, Lexer set extensionInitialized to true and auto-register failed
+		$this->_twig->setLexer(new Twig_Lexer($this->_twig, $this->_config['delimiters']));
+
+		// Initialize defaults
+		$this->theme($this->_config['default_theme'])
+			 ->layout($this->_config['default_layout'])
+			 ->template($this->_config['default_template']);
 
 		$this->_globals['title'] = NULL;
 		$this->_globals['meta'] = NULL;
